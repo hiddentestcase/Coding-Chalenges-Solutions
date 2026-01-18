@@ -1,0 +1,41 @@
+class Solution {
+public:
+    string lexSmallestAfterDeletion(string s) {
+        stack<char> st;
+        int len = s.length();
+        unordered_map<char,int> count;
+        unordered_map<char, int> isIncluded;
+        for(int i = 0; i < len; i++)
+        {
+            count[s[i]]++;
+        }
+        for(int i = 0; i < len; i++)
+        {
+            while(!st.empty() && st.top() > s[i] && (count[st.top()] >=  1 || isIncluded[st.top()] > 1))
+            {
+                isIncluded[st.top()]--;
+                st.pop();
+            }
+            st.push(s[i]);
+            isIncluded[s[i]]++;
+            count[s[i]]--;
+        }
+        string ans = "";
+        
+        bool isStarted = false;
+        while(!st.empty())
+        {
+            if(isStarted == false && isIncluded[st.top()] > 1)
+            {
+                isIncluded[st.top()]--;
+                st.pop();
+                continue;
+            }
+            isIncluded[st.top()]--;
+            isStarted = true;
+            ans = st.top() + ans;
+            st.pop();
+        }
+        return ans;
+    }
+};
