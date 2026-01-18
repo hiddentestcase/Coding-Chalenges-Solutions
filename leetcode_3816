@@ -1,7 +1,8 @@
+/* Space optimized solutuion */
+
 class Solution {
 public:
     string lexSmallestAfterDeletion(string s) {
-        stack<char> st;
         int len = s.length();
         unordered_map<char,int> count;
         unordered_map<char, int> isIncluded;
@@ -9,33 +10,24 @@ public:
         {
             count[s[i]]++;
         }
+        int j = -1;
         for(int i = 0; i < len; i++)
         {
-            while(!st.empty() && st.top() > s[i] && (count[st.top()] >=  1 || isIncluded[st.top()] > 1))
+            while(j >= 0 && s[j] > s[i] && (count[s[j]] >=  1 || isIncluded[s[j]] > 1))
             {
-                isIncluded[st.top()]--;
-                st.pop();
+                isIncluded[s[j]]--;
+                j--;
             }
-            st.push(s[i]);
+            j++;
+            s[j] = s[i];
             isIncluded[s[i]]++;
             count[s[i]]--;
         }
-        string ans = "";
-        
-        bool isStarted = false;
-        while(!st.empty())
+        while(j >= 0 && isIncluded[s[j]] > 1)
         {
-            if(isStarted == false && isIncluded[st.top()] > 1)
-            {
-                isIncluded[st.top()]--;
-                st.pop();
-                continue;
-            }
-            isIncluded[st.top()]--;
-            isStarted = true;
-            ans = st.top() + ans;
-            st.pop();
+            isIncluded[s[j]]--;
+            j--;
         }
-        return ans;
+        return s.substr(0, j + 1);
     }
 };
